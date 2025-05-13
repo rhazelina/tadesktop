@@ -53,9 +53,9 @@ Alur Data & Proses Teknis
                                      └─────┬──────┘
                                            │
                                            ▼
-┌─────────┐     ┌───────────────┐     ┌────────────┐
-│ Tamu    │◀────┤ QR Code      │◀────┤ Generate QR │
-└─────────┘     └───────────────┘     └────────────┘
+┌─────────┐     ┌───────────────┐     ┌─────────────┐
+│ Tamu    │◀────┤ QR Code       │◀────┤ Generate QR │
+└─────────┘     └───────────────┘     └─────────────┘
                                            │
                                            ▼
                                      ┌────────────┐
@@ -65,7 +65,7 @@ Alur Data & Proses Teknis
 3. Proses Verifikasi Kedatangan & Notifikasi
 ┌─────────┐     ┌───────────────┐     ┌────────────┐
 │ Tamu    │─────▶ Tunjukkan QR  │─────▶ Penerima   │
-└─────────┘     └───────────────┘     │ Tamu      │
+└─────────┘     └───────────────┘     │ Tamu       │
                                       └─────┬──────┘
                                             │
                                             ▼
@@ -88,7 +88,7 @@ Alur Data & Proses Teknis
                                            │
                                            ▼
 ┌─────────┐     ┌───────────────┐     ┌────────────┐
-│ Guru    │◀────┤ Notifikasi   │◀────┤ WebSocket  │
+│ Guru    │◀────┤ Notifikasi    │◀────┤ WebSocket  │
 └─────────┘     │ Real-time     │     │ Server     │
                 └───────────────┘     └────────────┘
 Implementasi Teknis Detail

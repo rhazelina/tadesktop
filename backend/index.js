@@ -36,11 +36,11 @@ const pool = new pg.Pool({
   user: process.env.DB_USER || 'haries',
   host: process.env.DB_HOST || 'localhost',
   database: process.env.DB_NAME || 'testingdb',
-  password: process.env.DB_PASSWORD || 'abcd1',
-  port: process.env.DB_PORT || 5432,
-  max: 20,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
+  // password: process.env.DB_PASSWORD || 'abcd1',
+  // port: process.env.DB_PORT || 5432,
+  // max: 20,
+  // idleTimeoutMillis: 30000,
+  // connectionTimeoutMillis: 2000,
 });
 
 //  Middleware Autentikasi JWT
@@ -157,10 +157,20 @@ app.post('/api/login', async (req, res) => {
   const { username, password } = req.body;
 
   // Input validation
-  const usernameError = validateUsername(username);
-  const passwordError = validatePassword(password);
+  const usernameError = !username ? 'Username dibutuhkan' :
+    username.length < 3 ? 'Username minimal 3 karakter' :
+    username.length > 20 ? 'Username maksimal 20 karakter' :
+    !/^[a-zA-Z0-9_]+$/.test(username) ? 'Username hanya bisa huruf, angka dan underscores' : 
+    null;
+  const passwordError = !password ? 'Password dibutuhkan' :
+    password.length < 6 ? 'Password minimal 6 karakter' :
+    password.length > 50 ? 'Password maksimal 50 karakter' :
+    !/[A-Z]/.test(password) ? 'Password harus memiliki minimal 1 huruf besar' :
+    !/[a-z]/.test(password) ? 'Password harus memiliki minimal 1 kecil besar' :
+    !/[0-9]/.test(password) ? 'Password harus memiliki minimal 1 angka besar' :
+    null;
   
-  if (usernameError || passwordError) {
+  if (!usernameError || !passwordError) {
     return res.status(400).json({ 
       success: false,
       message: usernameError || passwordError 
@@ -217,20 +227,20 @@ app.post('/api/login', async (req, res) => {
 });
   
   // Aftrt verifikasi password
-  const tokenPayload = {
-    id: user.id,
-    username: user.username,
-    role: user.role
-  };
+  // const tokenPayload = {
+  //   id: user.id,
+  //   username: user.username,
+  //   role: user.role
+  // };
   
-  const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: TOKEN_EXPIRY });
+  // const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: TOKEN_EXPIRY });
 
-  res.json({
-    success: true,
-    message: 'Login berhasil',
-    token, 
-    user: tokenPayload
-  });
+  // res.json({
+  //   success: true,
+  //   message: 'Login berhasil',
+  //   token, 
+  //   user: tokenPayload
+  // });
 // });
 
 // Endpoint Protected
