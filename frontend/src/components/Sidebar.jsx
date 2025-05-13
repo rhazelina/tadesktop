@@ -41,7 +41,7 @@ export default function Sidebar() {
         
         <div className="mb-1">
           <NavLink
-            to="/admin/guest-data"
+            // to="/admin/guest-data" -- Just Remove This, Fix!
             onClick={handleGuestDataClick}
             className={({ isActive }) => 
               `px-6 py-3 flex items-center justify-between ${isActive || isGuestDataOpen ? 'bg-blue-50 text-blue-600' : 'hover:bg-gray-50 text-gray-700'} transition-colors duration-200`
@@ -74,7 +74,7 @@ export default function Sidebar() {
               >
                 Daftar Tamu
               </NavLink>
-              </div>
+            </div>
           )}
           
         </div>

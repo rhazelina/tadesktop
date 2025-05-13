@@ -77,7 +77,8 @@ function App() {
             <Route
               path="/tamu"
               element={
-                <ProtectedRoute role="tamu">
+                // <ProtectedRoute role="tamu">
+                <ProtectedRoute role="operator">
                   <TamuPage />
                 </ProtectedRoute>
               }
