@@ -193,7 +193,7 @@ app.post('/api/login', async (req, res) => {
   const usernameError = !username ? 'Username dibutuhkan' :
     username.length < 3 ? 'Username minimal 3 karakter' :
     username.length > 20 ? 'Username maksimal 20 karakter' :
-    !/^[a-zA-Z0-9_]+$/.test(username) ? 'Username hanya bisa huruf, angka dan underscores' : 
+    // !/^[a-zA-Z0-9_]+$/.test(username) ? 'Username hanya bisa huruf, angka dan underscores' : 
     null;
   const passwordError = !password ? 'Password dibutuhkan' :
     password.length < 6 ? 'Password minimal 6 karakter' :
