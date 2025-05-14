@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
-import pg from 'pg';
+// import pg from 'pg';
+import mysql from 'mysql2/promise';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
@@ -32,16 +33,27 @@ app.use(cors({
 app.use(express.json({ limit: '10kb' }));
 
 // Database configuration 
-const pool = new pg.Pool({
-  user: process.env.DB_USER || 'haries',
+// const pool = new pg.Pool({
+//   user: process.env.DB_USER || 'haries',
+//   host: process.env.DB_HOST || 'localhost',
+//   database: process.env.DB_NAME || 'testingdb',
+//   password: process.env.DB_PASSWORD || 'abcd1',
+//   port: process.env.DB_PORT || 5432,
+//   max: 20,
+//   idleTimeoutMillis: 30000,
+//   connectionTimeoutMillis: 2000,
+// });
+
+const pool = mysql.createPool({
   host: process.env.DB_HOST || 'localhost',
-  database: process.env.DB_NAME || 'testingdb',
-  // password: process.env.DB_PASSWORD || 'abcd1',
-  // port: process.env.DB_PORT || 5432,
-  // max: 20,
-  // idleTimeoutMillis: 30000,
-  // connectionTimeoutMillis: 2000,
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '',
+  database: process.env.DB_NAME || 'bukutamu_final',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
+
 
 //  Middleware Autentikasi JWT
 const authenticateToken = (roles = []) => {
@@ -53,10 +65,15 @@ const authenticateToken = (roles = []) => {
 
     try {
       const user = jwt.verify(token, JWT_SECRET);
-      const userCheck = await pool.query(
-        'SELECT * FROM users WHERE id = $1',
+      // const userCheck = await pool.query(
+      //   'SELECT * FROM users WHERE id = $1',
+      //   [user.id]
+      // );
+      const [userCheck] = await pool.query(
+        'SELECT * FROM users WHERE id = ?',
         [user.id]
       );
+      
       
       if (!userCheck.rows[0] || !roles.includes(userCheck.rows[0].role)) {
         return res.sendStatus(403);
@@ -134,14 +151,26 @@ app.post('/api/qr/verify', authenticateToken(['operator']), async (req, res) => 
   const { qrId } = req.body;
   
   try {
-    const result = await pool.query(
+    // const result = await pool.query(
+    //   `UPDATE qr_codes 
+    //    SET status = 'used', used_at = NOW()
+    //    WHERE id = $1 AND status = 'active'
+    //    RETURNING *`,
+    //   [qrId]
+    // );
+    const [updateResult] = await pool.query(
       `UPDATE qr_codes 
        SET status = 'used', used_at = NOW()
-       WHERE id = $1 AND status = 'active'
-       RETURNING *`,
+       WHERE id = ? AND status = 'active'`,
       [qrId]
     );
-
+    
+    // Dan ambil ulang datanya kalau butuh
+    const [result] = await pool.query(
+      'SELECT * FROM qr_codes WHERE id = ?',
+      [qrId]
+    );
+    
     if (result.rows.length === 0) {
       return res.status(400).json({ valid: false });
     }
@@ -194,10 +223,10 @@ app.post('/api/login', async (req, res) => {
     const user = result.rows[0];
     
     // Debug logging (remove in production)
-    console.log(`Comparing password for ${username}:`, {
-      inputPassword: password,
-      storedHash: user.password
-    });
+    // console.log(`Comparing password for ${username}:`, {
+    //   inputPassword: password,
+    //   storedHash: user.password
+    // });
 
     const passwordMatch = await bcrypt.compare(password, user.password);
     
