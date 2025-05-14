@@ -60,8 +60,7 @@ async function initializeDatabase() {
       )
     `);
     
-    // Create other necessary tables (users, qr_codes, etc.)
-    // ... (tambahkan query CREATE TABLE lainnya jika diperlukan)
+
     
     connection.release();
     console.log('Database initialized');
