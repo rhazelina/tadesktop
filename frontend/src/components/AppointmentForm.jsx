@@ -12,6 +12,8 @@ export default function AppointmentForm() {
   });
 
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState({ type: '', text: '' });
 
   const validate = () => {
     const newErrors = {};
@@ -26,13 +28,50 @@ export default function AppointmentForm() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validate()) {
-      alert(`Janji Temu dibuat pada ${format(formData.tanggal, 'dd MMMM yyyy')}`);
-      console.log('Data Janji Temu:', formData);
-      setFormData({ nama: '', noHp: '', keterangan: '', tanggal: new Date() });
-      setErrors({});
+    if (!validate()) return;
+    
+    setIsSubmitting(true);
+    setSubmitMessage({ type: '', text: '' });
+
+    try {
+      const formattedDate = format(formData.tanggal, 'yyyy-MM-dd');
+      const dataToSend = {
+        ...formData,
+        tanggal: formattedDate
+      };
+
+      const response = await fetch('http://localhost:5000/api/appointments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToSend),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setSubmitMessage({ 
+          type: 'success', 
+          text: `Janji Temu berhasil dibuat untuk tanggal ${format(formData.tanggal, 'dd MMMM yyyy')}`
+        });
+        setFormData({ nama: '', noHp: '', keterangan: '', tanggal: new Date() });
+        setErrors({});
+      } else {
+        setSubmitMessage({ 
+          type: 'error', 
+          text: result.message || 'Gagal membuat janji temu. Silakan coba lagi.' 
+        });
+      }
+    } catch (error) {
+      setSubmitMessage({ 
+        type: 'error', 
+        text: 'Terjadi kesalahan jaringan. Silakan coba lagi.' 
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -61,12 +100,23 @@ export default function AppointmentForm() {
               onChange={(date) => setFormData({ ...formData, tanggal: date })}
               inline
               className="w-full"
+              minDate={new Date()}
             />
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="bg-white rounded-3xl shadow-xl p-6 w-[300px] space-y-4 relative">
           <h2 className="text-lg font-bold text-[#1D3D4C] mb-2">TAMBAH JANJI TEMU</h2>
+
+          {submitMessage.text && (
+            <div className={`p-2 rounded-md text-sm ${
+              submitMessage.type === 'success' 
+                ? 'bg-green-100 text-green-800' 
+                : 'bg-red-100 text-red-800'
+            }`}>
+              {submitMessage.text}
+            </div>
+          )}
 
           <div>
             <label className="block font-semibold text-sm">Nama Tamu</label>
@@ -109,9 +159,12 @@ export default function AppointmentForm() {
 
           <button
             type="submit"
-            className="bg-[#1D3D4C] text-white py-2 px-4 w-full rounded-md font-semibold hover:bg-[#274c5f] transition-all"
+            disabled={isSubmitting}
+            className={`bg-[#1D3D4C] text-white py-2 px-4 w-full rounded-md font-semibold hover:bg-[#274c5f] transition-all ${
+              isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
           >
-            Buat Janji Temu
+            {isSubmitting ? 'Menyimpan...' : 'Buat Janji Temu'}
           </button>
         </form>
       </div>
