@@ -2,8 +2,11 @@ import { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { format } from 'date-fns';
+import PropTypes from 'prop-types';
+import { createAppointment } from '../../services/appointmentService';
+import { validateAppointmentForm } from '../../utils/validation';
 
-export default function AppointmentForm() {
+const AppointmentForm = ({ onSuccess }) => {
   const [formData, setFormData] = useState({
     nama: '',
     noHp: '',
@@ -15,60 +18,36 @@ export default function AppointmentForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState({ type: '', text: '' });
 
-  const validate = () => {
-    const newErrors = {};
-    if (!formData.nama.trim()) newErrors.nama = 'Nama tamu wajib diisi.';
-    if (!formData.noHp.trim()) {
-      newErrors.noHp = 'No HP wajib diisi.';
-    } else if (!/^08[0-9]{8,14}$/.test(formData.noHp)) {
-      newErrors.noHp = 'Format No HP tidak valid.';
-    }
-    if (!formData.keterangan.trim()) newErrors.keterangan = 'Keterangan wajib diisi.';
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validate()) return;
+    
+    // Validasi form
+    const validationErrors = validateAppointmentForm(formData);
+    setErrors(validationErrors);
+    
+    if (Object.keys(validationErrors).length > 0) return;
     
     setIsSubmitting(true);
     setSubmitMessage({ type: '', text: '' });
 
     try {
-      const formattedDate = format(formData.tanggal, 'yyyy-MM-dd');
-      const dataToSend = {
-        ...formData,
-        tanggal: formattedDate
-      };
-
-      const response = await fetch('http://localhost:5000/api/appointments', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(dataToSend),
+      const result = await createAppointment(formData);
+      
+      setSubmitMessage({ 
+        type: 'success', 
+        text: `Janji Temu berhasil dibuat untuk tanggal ${format(formData.tanggal, 'dd MMMM yyyy')}`
       });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        setSubmitMessage({ 
-          type: 'success', 
-          text: `Janji Temu berhasil dibuat untuk tanggal ${format(formData.tanggal, 'dd MMMM yyyy')}`
-        });
-        setFormData({ nama: '', noHp: '', keterangan: '', tanggal: new Date() });
-        setErrors({});
-      } else {
-        setSubmitMessage({ 
-          type: 'error', 
-          text: result.message || 'Gagal membuat janji temu. Silakan coba lagi.' 
-        });
-      }
+      
+      // Reset form
+      setFormData({ nama: '', noHp: '', keterangan: '', tanggal: new Date() });
+      setErrors({});
+      
+      // Callback untuk parent component jika perlu
+      if (onSuccess) onSuccess(result);
     } catch (error) {
       setSubmitMessage({ 
         type: 'error', 
-        text: 'Terjadi kesalahan jaringan. Silakan coba lagi.' 
+        text: error.message || 'Gagal membuat janji temu. Silakan coba lagi.' 
       });
     } finally {
       setIsSubmitting(false);
@@ -79,7 +58,7 @@ export default function AppointmentForm() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  return (
+return (
     <div className="min-h-screen bg-white flex flex-col items-center justify-center relative overflow-hidden px-6 py-10">
       <div className="absolute inset-0 z-0">
         <div className="absolute w-full h-20 rotate-[45deg] bg-orange-400 top-[30%] left-[-10%] rounded-xl" />
@@ -171,3 +150,9 @@ export default function AppointmentForm() {
     </div>
   );
 }
+
+AppointmentForm.propTypes = {
+  onSuccess: PropTypes.func,
+};
+
+export default AppointmentForm;
