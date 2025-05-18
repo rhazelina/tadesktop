@@ -9,10 +9,10 @@ import { pool } from './config/database.js';
 import { JWT_SECRET } from './config/env.js';
 
 // Routes
-import authRoutes from './routes/authRoutes.js';
-import appointmentRoutes from './routes/appointmentRoutes.js';
-import qrRoutes from './routes/qrRoutes.js';
-import dashboardRoutes from './routes/dashboardRoutes.js';
+// import authRoutes from './routes/authRoutes.js';
+// // import appointmentRoutes from './routes/appointmentRoutes.js';
+// import qrRoutes from './routes/qrRoutes.js';
+// import dashboardRoutes from './routes/dashboardRoutes.js';
 
 // Services
 import { initializeWebSocket } from './services/websocketService.js';
@@ -40,10 +40,10 @@ import { initializeDatabase } from './models/initModels.js';
 initializeDatabase(pool);
 
 // Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/appointments', appointmentRoutes);
-app.use('/api/qr', qrRoutes);
-app.use('/api/dashboard', dashboardRoutes);
+// app.use('/api/auth', authRoutes);
+//  app.use('/api/appointments', appointmentRoutes);
+// app.use('/api/qr', qrRoutes);
+// app.use('/api/dashboard', dashboardRoutes);
 
 // Start server
 server.listen(port, () => {

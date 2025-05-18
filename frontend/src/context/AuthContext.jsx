@@ -1,9 +1,18 @@
-import { createContext, useContext, useState } from 'react';
+// src/context/AuthContext.js
+import { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+
+  // Check localStorage saat pertama load
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   const login = (userData) => {
     setUser(userData);
