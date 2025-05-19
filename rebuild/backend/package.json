@@ -1,0 +1,35 @@
+{
+  "name": "backend.tadekstop",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js --dev --env-file"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Witthayanuraks/tadesktop.git"
+  },
+  "author": "@witthayanuraks, @ernestoyoofi",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/Witthayanuraks/tadesktop/issues"
+  },
+  "homepage": "https://github.com/Witthayanuraks/tadesktop#readme",
+  "description": "",
+  "dependencies": {
+    "axios": "^1.9.0",
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.14.1",
+    "qrcode": "^1.5.4",
+    "uuid": "^11.1.0",
+    "wa-client": "github:ernestoyoofi/wa-client",
+    "ws": "^8.18.2",
+    "yup": "^1.6.1"
+  }
+}
