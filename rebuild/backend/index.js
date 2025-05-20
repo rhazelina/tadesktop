@@ -22,6 +22,7 @@ app.use(cors({
 }))
 // On Serverless / Microservices Limit In 40K(bytes)
 app.use(express.json({ limit: '20kb' }))
+app.use(middlewareApplyAuth)
 
 // # Router API
 app.use("/api/auth", authenticationRouter)       // Authentikasi
@@ -30,7 +31,6 @@ app.use("/api/tamu", pengelolaTamuRouter)        // Pengelolaan Tamu
 app.use("/api/appointments", janjiTamuRouter)    // Janji Tamu
 app.use("/api/notifications", notifikasiRouter)  // Notifikasi
 app.use("/api/reports", laporanRouter)           // Laporan Tamu
-app.use(middlewareApplyAuth)
 
 // # Server Running
 const server = app.listen(port, host, () => {
