@@ -1,0 +1,30 @@
+/* TESTING, MALES KALO TAILWINDNYA ERROR  */
+
+/* Kalender styling */
+.react-datepicker {
+  font-family: 'Inter', sans-serif;
+  border: 2px solid #1D3D4C;
+}
+
+.react-datepicker__header {
+  background-color: #1D3D4C;
+  color: white;
+}
+
+.react-datepicker__day--selected {
+  background-color: #1D3D4C;
+}
+
+/* Form styling */
+.appointment-form {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.appointment-form input {
+  transition: border-color 0.3s ease;
+}
+
+.appointment-form input:focus {
+  border-color: #1D3D4C;
+  outline: none;
+}

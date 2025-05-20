@@ -1,45 +1,9 @@
-// import { useNavigate } from 'react-router-dom';
-// import Sidebar from '../components/Sidebar';
-// // import { Outlet } from 'react-router-dom';
-
-// function AdminPage() {
-//   const navigate = useNavigate();
-
-//   const logout = () => {
-//     localStorage.removeItem('user');
-//     navigate('/');
-//   };
-
-//   return (
-//     <div className="flex min-h-screen bg-gray-100">
-//       <Sidebar />
-//       <div className="flex-1 p-8">
-//         <h1 className="text-3xl font-bold text-gray-800 mb-8">Dashboard Admin</h1>
-        
-//         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-//           <h2 className="text-xl font-semibold text-gray-700 mb-4">125 Total Tamu</h2>
-//         </div>
-        
-//         <button 
-//           onClick={logout} 
-//           className="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
-//         >
-//           Keluar
-//         </button>
-//       </div>
-//       </div>
-//   );
-// }
-
-// export default AdminPage;
-
-// src/components/AdminDashboard.jsx
 import { useEffect, useState } from 'react';
 import Sidebar from '../components/Sidebar';
 
 export default function AdminDashboard() {
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
-  const [stats, setStats] = useState({
+  const [stats] = useState({
     totalGuests: 125,
     todayVisits: 12,
     monthlyVisits: 84,
@@ -175,7 +139,6 @@ export default function AdminDashboard() {
   );
 }
 
-// Improved StatCard component
 function StatCard({ title, value, icon, color, textColor, trend, trendValue }) {
   return (
     <div className={`bg-gradient-to-br ${color} p-5 rounded-xl shadow-sm`}>
@@ -204,7 +167,6 @@ function StatCard({ title, value, icon, color, textColor, trend, trendValue }) {
   );
 }
 
-// New ActivityItem component
 function ActivityItem({ time, name, action, status, group }) {
   return (
     <div className="flex items-start">
