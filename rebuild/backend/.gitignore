@@ -1,0 +1,11 @@
+# Node Modules (Node.js)
+node_modules
+package-lock.json
+# Secret File
+.env
+.env.global
+*.env
+# Logging File
+log-*
+*.log
+*log*
