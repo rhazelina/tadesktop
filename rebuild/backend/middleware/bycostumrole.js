@@ -1,6 +1,6 @@
-import { autentikasi_middleware_auth } from "../database/db.authentikasi"
+import { autentikasi_middleware_auth } from "../database/db.authentikasi.js"
 
-async function middlewareRoleUsed(roleApply = []) {
+function middlewareRoleUsed(roleApply = ["*"]) {
   return async (req, res, next) => {
     const usesTokenApply = String(req.tokenAuth||"")
     // Tidak memiliki authentikasi
@@ -20,6 +20,12 @@ async function middlewareRoleUsed(roleApply = []) {
         error: "internalerror",
         message: "Internal Server Error"
       })
+    }
+    // Apakah ada role semuanya?
+    if(roleApply.includes("*")) {
+      req.dataUser = tokendata.data
+      next()
+      return;
     }
     // Pendeteksi lain
     if(!roleApply.includes(String(tokendata.data?.role))) {
