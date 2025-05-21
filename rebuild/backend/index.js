@@ -20,8 +20,28 @@ app.use(cors({
   origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
   credentials: true
 }))
+// # CORS Configuration
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'http://127.0.0.1:5173' 
+]
+
+// bungkusan cors
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true)
+    } else {
+      callback(new Error('Blocked by CORS: ' + origin))
+    }
+  },
+  credentials: true
+}))
+
 // On Serverless / Microservices Limit In 40K(bytes)
 app.use(express.json({ limit: '20kb' }))
+app.use(middlewareApplyAuth)
 
 // # Router API
 app.use("/api/auth", authenticationRouter)       // Authentikasi
@@ -30,7 +50,6 @@ app.use("/api/tamu", pengelolaTamuRouter)        // Pengelolaan Tamu
 app.use("/api/appointments", janjiTamuRouter)    // Janji Tamu
 app.use("/api/notifications", notifikasiRouter)  // Notifikasi
 app.use("/api/reports", laporanRouter)           // Laporan Tamu
-app.use(middlewareApplyAuth)
 
 // # Server Running
 const server = app.listen(port, host, () => {
